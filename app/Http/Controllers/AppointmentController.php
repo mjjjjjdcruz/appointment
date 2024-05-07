@@ -97,4 +97,12 @@ class AppointmentController extends Controller
     {
         //
     }
+
+    // AppointmentController.php
+    public function returnedAppointments()
+    {
+        $returnedAppointments = Appointment::where('status', 'returned')->get();
+        return response()->json(['appointments' => $returnedAppointments]);
+    }
+
 }

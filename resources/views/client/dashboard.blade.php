@@ -13,13 +13,45 @@
         </div>
     </div>
 
-    @if(isset($alertMessage))
-        @push('scripts')
-            <script>
-                alert("{!! $alertMessage !!}");
-            </script>
-        @endpush
-    @endif
-    
-    
+    <script>
+    let lastAlertedAppointments = [];
+
+    // Function to check for returned appointments
+    const checkReturnedAppointments = async () => {
+        try {
+            console.log('Checking for returned appointments...');
+            const response = await fetch('/api/returned-appointments');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const newAppointments = data.appointments.filter(appointment => !lastAlertedAppointments.includes(appointment.id));
+
+            if (newAppointments.length > 0) {
+                console.log('New appointments found:', newAppointments);
+                // Notify the user about new returned appointments
+                newAppointments.forEach(appointment => {
+                    let alertMessage = `Your appointment with ID ${appointment.id} has been returned.`;
+                    if (appointment.reason_for_return) {
+                        alertMessage += ` Reason: ${appointment.reason_for_return}`;
+                    }
+                    console.log('Showing alert:', alertMessage);
+                    alert(alertMessage);
+                });
+
+                // Update lastAlertedAppointments with the new appointment IDs
+                lastAlertedAppointments = lastAlertedAppointments.concat(newAppointments.map(appointment => appointment.id));
+            } else {
+                console.log('No new appointments found.');
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        }
+    };
+
+    // Call the function initially and then every 5 seconds
+    checkReturnedAppointments(); // Call immediately
+    setInterval(checkReturnedAppointments, 5000); // Call every 5 seconds
+</script>
+
 </x-app-layout>
