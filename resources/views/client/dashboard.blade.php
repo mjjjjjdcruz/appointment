@@ -29,7 +29,6 @@
 
             if (newAppointments.length > 0) {
                 console.log('New appointments found:', newAppointments);
-                // Notify the user about new returned appointments
                 newAppointments.forEach(appointment => {
                     let alertMessage = `Your appointment with ID ${appointment.id} has been returned.`;
                     if (appointment.reason_for_return) {
@@ -39,7 +38,6 @@
                     alert(alertMessage);
                 });
 
-                // Update lastAlertedAppointments with the new appointment IDs
                 lastAlertedAppointments = lastAlertedAppointments.concat(newAppointments.map(appointment => appointment.id));
             } else {
                 console.log('No new appointments found.');
@@ -49,9 +47,9 @@
         }
     };
 
-    // Call the function initially and then every 5 seconds
     checkReturnedAppointments(); // Call immediately
-    setInterval(checkReturnedAppointments, 5000); // Call every 5 seconds
+    // Aya may problema/san solution ungana pero paulit-ulit ya man alert
+    setInterval(checkReturnedAppointments, 5000); 
 </script>
 
 </x-app-layout>
